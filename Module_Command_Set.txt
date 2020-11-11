@@ -1,0 +1,49 @@
+mod_prac2>> This is the root folder where in you run all the below commands
+
+javac -d .\classes\ .\src\com\ntuc\Class.java
+
+java -cp classes com.ntuc.Class
+
+javac -d mods/pracMod .\mod_src\pracMod\module-info.java .\mod_src\pracMod\com\ntuc\Class.java
+
+java -p mods -m pracMod/com.ntuc.Class
+
+javap -m pracMod --module-path .\mods\  -cp .\mods\ com.ntuc.Class
+
+javac -d class/world .\src\world\module-info.java .\src\world\world\World.java
+
+javac -p .\classes\ -d classes/greeting .\src\greeting\module-info.java .\src\greeting\greeting\Hello.java
+
+javac -d .\classes\ --module-source-path src .\src\greeting\greeting\Hello.java .\src\world\world\World.java
+
+java --module-path classes --describe-module greeting
+java --module-path classes --describe-module world
+
+jar --create -f jars/world.jar -C .\classes\world\ .
+
+jar --create -f jars/hello.jar --main-class greeting.Hello -C .\classes\greeting\ .
+
+java -p jars -m greeting
+
+jlink --module-path jars/ --add-modules world,greeting --output myimage
+
+// myimage1 		38.9 MB
+
+jlink --module-path jars/ --add-modules world,greeting --output myimage6 --strip-debug --compress=0
+
+// myimage6     33.4 MB
+
+jlink --module-path jars/ --add-modules world,greeting --output myimage5 --strip-debug --compress=1
+
+// myimage5     27.5 MB
+
+jlink --module-path jars/ --add-modules world,greeting --output myimage4 --strip-debug --compress=2
+
+// myimage4 		21.1 MB
+
+
+myimage\bin> ./java --list-modules
+greeting
+java.base@11.0.8
+java.logging@11.0.8
+world
