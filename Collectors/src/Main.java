@@ -1,5 +1,8 @@
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,22 +14,34 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Main {
-    
+
     public static List<Employee> loadEmpFromFile() {
         List<Employee> employees = new ArrayList<>();
         String fileName = "C:\\SGUS\\Java_SE_II\\Collectors\\src\\empDetails.txt";
         File f = new File(fileName);
-        if(f.exists()){
-            System.out.println(" File Indeed exists !!!!");
-            try(Stream <String> stream = Files.lines(Paths.get(fileName))){
+        int i = 0;
+        if (f.exists()) {
+            try {
+                FileReader fr = new FileReader(f);
+                BufferedReader br = new BufferedReader(fr);
+                String emp = br.readLine();
+
+                do {
+                    System.out.println(" read this line  >>  " + i + " :: " + emp);
+                    employees.add(new Employee(emp));
+                    i++;
+                } while ((emp = br.readLine()) != null);
                 
-                stream.forEach(System.out::println);
-            }catch(IOException e){
-                System.out.println(" Exception in reading from file " + e.getMessage());
+                
+
+                br.close();
+                fr.close();
+            } catch (Exception e) {
+                System.out.println(" Exception in reading file " + e.getMessage());
             }
+
         }
-            
-            return employees;
+        return employees;
     }
 
     public static List<Employee> loadEmp() {
@@ -62,93 +77,80 @@ public class Main {
 
         System.out.println(" Starting here ......");
 
-        
-        //loadEmpFromFile();
-        
-      //  System.out.println(" Employees whose salary is more than 7k ......");
-        
-        System.out.println(loadEmp().stream().collect(Collectors.counting()));
-                
-    System.out.println(loadEmp()
+        List<Employee> employees = loadEmpFromFile();
+        System.out.println(employees.stream().collect(Collectors.counting()));
+
+        System.out.println(employees
                 .stream()
                 .map(e -> e.getlName())
                 .collect(Collectors.toList()));
-    
-    
-    
-        System.out.println(loadEmp()
+        System.out.println(" Employees whose salary is more than 7k ......");
+
+        System.out.println(employees
                 .stream()
                 .filter(e -> e.getSalary() >= 7000)
                 .map(e -> e.getlName())
                 .collect(Collectors.toList()));
 
         // Fetch all LNames and create a list 
-        System.out.println(loadEmp()
+        System.out.println(employees
                 .stream()
                 .map(e -> e.getlName())
                 .collect(Collectors.toList()));
 
         // Fetch all LNames and create a set with no duplicate values
-        System.out.println(" \n\n Employee listed by Last Name   ::: " + loadEmp()
+        System.out.println(" \n\n Employee listed by Last Name   ::: " + employees
                 .stream()
                 .map(e -> e.getlName())
                 .collect(Collectors.toSet()));
 
         // Fetch number of employees working for a department 
-        System.out.println(" \n\n Employee by dept ::: " + loadEmp()
+        System.out.println(" \n\n Employee by dept ::: " + employees
                 .stream()
                 .collect(
-                        
                         Collectors.groupingBy(Employee::getDept,
-                        Collectors.collectingAndThen(Collectors.counting(), f -> f.intValue())
-                )));
+                                Collectors.collectingAndThen(Collectors.counting(), f -> f.intValue())
+                        )));
 
         // Average Years of Experience 
-        System.out.println(" \n\n Avg Exp ::: " + loadEmp()
+        System.out.println(" \n\n Avg Exp ::: " + employees
                 .stream()
                 .collect(Collectors.averagingDouble(e -> e.getYoe()))
-                );
-        
-        
+        );
+
         // Average Years of Experience 
-        System.out.println(" \n\n Employee by years of exp  ::: " + loadEmp()
+        System.out.println(" \n\n Employee by years of exp  ::: " + employees
                 .stream()
                 .collect(Collectors.groupingBy(Employee::getYoe))
-                );
-        
+        );
+
         // Get full name of emplyees 
-        
-        System.out.println(" \n\n Employee Fullname " + 
-                loadEmp()
-        .stream()
-                .map(e -> (e.getfName() + " " + e.getlName()))
-                .collect(Collectors.joining("\t;;\t"))
-                );
-        
+        System.out.println(" \n\n Employee Fullname "
+                + employees
+                        .stream()
+                        .map(e -> (e.getfName() + " " + e.getlName()))
+                        .collect(Collectors.joining("\t;;\t"))
+        );
+
         // Total Salary of all Employees
-        
-        System.out.println(" \n\n Total Salary of all Employees \t\t" + 
-                loadEmp()
-        .stream()
-        .collect(Collectors.summarizingInt(Employee::getSalary)));
-        
+        System.out.println(" \n\n Total Salary of all Employees \t\t"
+                + employees
+                        .stream()
+                        .collect(Collectors.summarizingInt(Employee::getSalary)));
+
         // Summary of Experience 
-        
-           // Total Salary of all Employees
-        
-        System.out.println(" \n\n Experience Report of all Employees \t\t" + 
-                loadEmp()
-        .stream()
-        .collect(Collectors.summarizingDouble(Employee::getYoe)));
-       
-        
+        // Total Salary of all Employees
+        System.out.println(" \n\n Experience Report of all Employees \t\t"
+                + employees
+                        .stream()
+                        .collect(Collectors.summarizingDouble(Employee::getYoe)));
+
         // Max Salary among Employees 
-        
-        System.out.println(" \n\n Max salary \t\t" + 
-                loadEmp().stream()
-    .collect(Collectors.groupingBy(Employee::getSalary, TreeMap::new, Collectors.toList()))
-    .firstEntry()
-    .getValue());
-       
+        System.out.println(" \n\n Max salary \t\t"
+                + employees.stream()
+                        .collect(Collectors.groupingBy(Employee::getSalary, TreeMap::new, Collectors.toList()))
+                        .firstEntry()
+                        .getValue());
+
     }
 }

@@ -17,6 +17,17 @@ public class Employee {
         this.yoe = yoe;
     }
 
+    public Employee(String oneString) {
+        System.out.println("*** " + oneString);
+        String[] empDetails = oneString.split(",");
+        this.lName = empDetails[0];
+        this.fName = empDetails[1];
+        this.dept = empDetails[2];
+        this.salary = Integer.parseInt(empDetails[3]);
+        this.desig = empDetails[4];
+        this.yoe = Double.parseDouble(empDetails[5]);
+    }
+
     public String getlName() {
         return lName;
     }
@@ -65,9 +76,8 @@ public class Employee {
         this.yoe = yoe;
     }
 
-    
-    @Override 
-    public String toString(){
-        return fName + " " + lName +  " " + dept + " " + salary + " " + desig + " " + yoe ;
+    @Override
+    public String toString() {
+        return fName + " " + lName + " " + dept + " " + salary + " " + desig + " " + yoe;
     }
 }
